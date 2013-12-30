@@ -83,6 +83,8 @@ in case task of
 
 Command line application 'auth' currently supports following options
 
+## Basic options
+
 ``` bash
 auth - a sample application for System.Auth.Framwork
 
@@ -101,4 +103,20 @@ Available commands:
 
 ```
 
+## Commands
 
+### Initialize the system
+```
+Usage: auth init [--overwrite]
+  Initialize the system
+
+Available options:
+  --overwrite              Overwrite existing store
+
+```
+
+### Add the user
+
+```
+Usage: auth add-user --newuser NEWUSERNAME --newpassword NEWPASSWORD
+```
