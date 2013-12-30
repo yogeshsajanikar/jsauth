@@ -3,6 +3,8 @@ jsauth
 
 A simple authorisation system.
 
+
+
 # Implementation
 
 It has native support for the user/group/permission management. The
@@ -77,5 +79,26 @@ in case task of
 
 ```
 
+# Commmand Line Application
+
+Command line application 'auth' currently supports following options
+
+``` bash
+auth - a sample application for System.Auth.Framwork
+
+Usage: auth --user USERNAME --password PASSWORD --store PATH COMMAND
+  Demonstrates the authorization system
+
+Available options:
+  -h,--help                Show this help text
+  --user USERNAME          User name for the system
+  --password PASSWORD      Password for the username
+  --store PATH             Path to auth database
+
+Available commands:
+  init                     Initialize the system
+  add-user                 Add user in the system
+
+```
 
 
