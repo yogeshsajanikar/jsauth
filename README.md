@@ -103,6 +103,8 @@ Available commands:
 
 ```
 
+The commands are authorized by the username and password supplied above.
+
 ## Commands
 
 ### Initialize the system
@@ -116,7 +118,16 @@ Available options:
 ```
 
 ### Add the user
+Add the user 
 
 ```
 Usage: auth add-user --newuser NEWUSERNAME --newpassword NEWPASSWORD
 ```
+
+### Delete the user
+Delete the given user
+
+```
+Usage: auth del-user username
+```
+

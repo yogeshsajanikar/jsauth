@@ -15,7 +15,9 @@ AuthTask,
 AuthError(..),
 Administrator(saveAuth),
 AddUserTask,
-addUserTask
+addUserTask,
+DelUserTask,
+delUserTask
 )
 
 where

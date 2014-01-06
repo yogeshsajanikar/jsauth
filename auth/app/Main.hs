@@ -7,18 +7,21 @@ import System.Auth.Native.Framework
 import Data.Monoid
        
 
+-- Subcommands 
 data Command = Init Bool
              | AddUser String String
-             | DelUser 
+             | DelUser String 
                deriving Show
 
 
+-- Basic options
 data AuthSystem = AuthSystem { username    :: String
                              , password    :: String
                              , store       :: String 
                              , subcommand  :: Command 
                              } deriving Show
 
+-- Run the auth system
 run :: AuthSystem -> IO () 
 run (AuthSystem u p s (Init opt)) = do
                let av = getValidator :: AuthValidator NAuth 
@@ -43,16 +46,31 @@ run (AuthSystem u p s (AddUser nu np)) = do
                                           Right   fn   -> let a' = fn auth u' p'
                                                           in saveAuth a'
 
+run (AuthSystem u p s (DelUser usr)) = do
+                let av = getValidator :: AuthValidator NAuth
+                    un = parseUsername    av u
+                    pw = validatePassword av p
+                    u' = parseUsername    av usr
+                result <- authUser un pw s
+                case result of 
+                     Left   error -> putStrLn $ auMsg error
+                     Right  auth  -> let task = unwrapTask auth (delUserTask :: DelUserTask NAuth)
+                                     in case task of
+                                        Left   error  -> putStrLn $ auMsg error 
+                                        Right  fn     -> let a' = fn auth u'
+                                                         in saveAuth a'
+
 run (AuthSystem u p s _) = do 
                 putStrLn "Not implemented"
 
 
+-- Initialize the system
 initCommandP :: Parser Command
 initCommandP = Init 
                <$> flag False True ( long "overwrite"
                                    <> help "Overwrite existing store")
 
-
+-- Add user
 addUserCommandP = AddUser 
                   <$> strOption (  long     "newuser" 
                                 <> metavar  "NEWUSERNAME"
@@ -61,7 +79,12 @@ addUserCommandP = AddUser
                                 <> metavar  "NEWPASSWORD"
                                 <> help     "Password for the new user" )
 
+-- Delete the user
+delUserCommandP = DelUser 
+                  <$> argument str (  metavar "USERNAME" )
 
+
+-- Option parser
 authSystemP :: Parser AuthSystem
 authSystemP = AuthSystem 
               <$> strOption (  long    "user" 
@@ -81,20 +104,18 @@ authSystemP = AuthSystem
                             <> command  "add-user" 
                               (info addUserCommandP 
                                     (progDesc "Add user in the system"))
+
+                            <> command  "del-user" 
+                              (info delUserCommandP 
+                                    (progDesc "Delete user from the system"))
                             )
                   
 
-
+-- Run the parser
 main = execParser opts >>= run
      where
         opts = info (helper <*> authSystemP)
                     (fullDesc
                     <> progDesc "Demonstrates the authorization system"
                     <> header   "auth - a sample application for System.Auth.Framwork" )
-
-
-     
-
-
-
 
